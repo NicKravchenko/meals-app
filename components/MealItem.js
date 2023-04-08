@@ -7,27 +7,25 @@ import {
   Platform,
 } from "react-native";
 
-function MealItem({ item }) {
+import MealDetails from "./MealDetails";
+
+function MealItem({ item, onPress }) {
+  function goToOtherScreen() {
+    onPress(item.id);
+  }
   return (
     <View style={styles.mealItem}>
       <Pressable
         android_ripple={{ color: "ccc" }}
         style={({ pressed }) => [pressed ? styles.buttonPressed : null]}
+        onPress={goToOtherScreen}
       >
         <View style={styles.innerContainer}>
           <View>
             <Image source={{ uri: item.imageUrl }} style={styles.image} />
             <Text style={styles.title}>{item.title}</Text>
           </View>
-          <View style={styles.details}>
-            <Text style={styles.detailItem}>{item.duration}m</Text>
-            <Text style={styles.detailItem}>
-              {item.complexity.toUpperCase()}
-            </Text>
-            <Text style={styles.detailItem}>
-              {item.affordability.toUpperCase()}
-            </Text>
-          </View>
+          <MealDetails item={item} />
         </View>
       </Pressable>
     </View>
@@ -64,14 +62,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     margin: 8,
-  },
-  details: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
-  },
-  detailItem: {
-    marginHorizontal: 10,
   },
 });

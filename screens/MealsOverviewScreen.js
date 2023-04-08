@@ -23,8 +23,15 @@ function MealsOverviewScreen({ route, navigation }) {
   const categoryTitle = CATEGORIES.find((cat) => cat.id === catId).title;
 
   function renderMealItem(itemData) {
-    return <MealItem item={itemData.item} />;
+    return <MealItem item={itemData.item} onPress={detailScreenHandler} />;
   }
+
+  function detailScreenHandler(id) {
+    navigation.navigate("MealDetail", {
+      mealId: id,
+    });
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
