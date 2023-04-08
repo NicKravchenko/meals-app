@@ -1,13 +1,48 @@
-import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import { useLayoutEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  Button,
+} from "react-native";
 
 import { MEALS } from "../data/dummy-data";
 import MealDetails from "../components/MealDetails";
 import List from "../components/Details/List";
+import IconButton from "../components/IconButton";
 
 function MealDetailScreen({ route, navigation }) {
   mealId = route.params.mealId;
-
   const selectedMeal = MEALS.find((meal) => meal.id === mealId);
+  const [favouriteButtonColor, setFavouriteButtonColor] = useState(
+    selectedMeal.isFavorite ? "#E8C07D" : "#fff"
+  );
+  const titleLength = 20;
+  const screenTitle =
+    selectedMeal.title.length > titleLength
+      ? selectedMeal.title.slice(0, titleLength) + "..."
+      : selectedMeal.title;
+
+  function headerButtonPresseHandler() {
+    selectedMeal.isFavorite = !selectedMeal.isFavorite;
+    setFavouriteButtonColor(selectedMeal.isFavorite ? "#ffa200" : "#fff");
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: screenTitle,
+      headerRight: () => (
+        <IconButton
+          icon="star"
+          size={24}
+          color={favouriteButtonColor}
+          onPress={headerButtonPresseHandler}
+        />
+      ),
+    });
+  }, [mealId, navigation, favouriteButtonColor]);
 
   return (
     <ScrollView>
