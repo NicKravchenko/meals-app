@@ -7,7 +7,7 @@ import MealItem from "../components/MealItem";
 import { CATEGORIES, MEALS } from "../data/dummy-data";
 
 function MealsOverviewScreen({ route, navigation }) {
-  //  const route = useRoute(); //Alternative to route prop
+  // const route = useRoute(); //Alternative to route prop
   const catId = route.params.categoryId;
 
   const displayedMeals = MEALS.filter((mealItem) => {
