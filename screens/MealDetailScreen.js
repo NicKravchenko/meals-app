@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,16 +9,19 @@ import {
 } from "react-native";
 
 import { MEALS } from "../data/dummy-data";
-import MealDetails from "../components/MealDetails";
+import MealDetails from "../components/MealsList/MealDetails";
 import List from "../components/Details/List";
 import IconButton from "../components/IconButton";
+import { FavoritesContext } from "../store/context/favorites-context";
 
 function MealDetailScreen({ route, navigation }) {
+  const favoriteMealsCtx = useContext(FavoritesContext);
+
   mealId = route.params.mealId;
   const selectedMeal = MEALS.find((meal) => meal.id === mealId);
-  const [favouriteButtonColor, setFavouriteButtonColor] = useState(
-    selectedMeal.isFavorite ? "#E8C07D" : "#fff"
-  );
+
+  const mealIsFavorite = favoriteMealsCtx.ids.includes(mealId);
+
   const titleLength = 20;
   const screenTitle =
     selectedMeal.title.length > titleLength
@@ -26,8 +29,11 @@ function MealDetailScreen({ route, navigation }) {
       : selectedMeal.title;
 
   function headerButtonPresseHandler() {
-    selectedMeal.isFavorite = !selectedMeal.isFavorite;
-    setFavouriteButtonColor(selectedMeal.isFavorite ? "#ffa200" : "#fff");
+    if (mealIsFavorite) {
+      favoriteMealsCtx.removeFavorite(mealId);
+    } else {
+      favoriteMealsCtx.addFavorite(mealId);
+    }
   }
 
   useLayoutEffect(() => {
@@ -35,14 +41,14 @@ function MealDetailScreen({ route, navigation }) {
       title: screenTitle,
       headerRight: () => (
         <IconButton
-          icon="star"
+          icon={mealIsFavorite ? "star" : "star-outline"}
           size={24}
-          color={favouriteButtonColor}
+          color={mealIsFavorite ? "#ffa200" : "#fff"}
           onPress={headerButtonPresseHandler}
         />
       ),
     });
-  }, [mealId, navigation, favouriteButtonColor]);
+  }, [mealId, navigation, headerButtonPresseHandler]);
 
   return (
     <ScrollView>
